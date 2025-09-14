@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-q#83d-*gp1uykuddlo%eyixtu#hch1pbfqwfwqfb)=vtv2@wp!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOW_ALL_ORIGINS=True
 
 # Application definition
 
@@ -62,7 +62,7 @@ ROOT_URLCONF = 'OpenSale.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

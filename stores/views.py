@@ -16,9 +16,7 @@ class StoreApi(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	parser_classes = [MultiPartParser, JSONParser, FormParser]
 	def get(self, request):
-		store = Store.objects.filter(seller=request.user).all()
-#		if not store:
-#			return Response({"status": False, "message": "Store not found"})
+		store = Store.objects.all()
 		store = StoreSerializer(store, many=True).data
 		return Response(store)
 	
@@ -64,6 +62,7 @@ class StoreApi(APIView):
 		user = User.objects.filter(id=request.user.id).first()
 		user.email = wait_user.email
 		user.save()
+		wait_user.delete()
 		store = Store.objects.create(seller=request.user, title=title, description=description, logo=logo[0])
 		store = StoreSerializer(store).data
 		return Response(store)
