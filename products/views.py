@@ -4,6 +4,7 @@ from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from rest_framework import permissions
+from user.models import SavedProduct
 from stores.models import Store
 from stores.serializers import StoreSerializer
 from .models import Product, ProductImages
@@ -14,9 +15,23 @@ class ProductApi(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	parser_classes = [MultiPartParser, FormParser, JSONParser]
 	def get(self, request):
+		if request.GET.get("my"):
+			store = Store.objects.filter(seller=request.user).first()
+			if not store:
+				return Response({"status": False, "message": "Store not found"})
+			products = Product.objects.filter(store=store).all()
+			products = ProductSerializer(products, many=True).data
+			return Response(products)
+			
 		products = Product.objects.all()
 		products = ProductSerializer(products, many=True).data
-		return Response(products)
+		result = []
+		for product in products:
+			saved_product = SavedProduct.objects.filter(user=request.user, product_id=product["id"]).first()
+			product["saved"] = True if saved_product else False
+			result.append(product)
+		
+		return Response(result)
 	
 	def post(self, request):
 		data = request.data
@@ -52,6 +67,10 @@ class ProductApi(APIView):
 		title = request.data.get("title")
 		description = request.data.get("description")
 		price = request.data.get("price")
+		print(request.data)
+		
+		if not all([product_id, title, description, price]):
+			return Response({"status": False, "message": "Invalid datas"})
 		
 		store = Store.objects.filter(id=request.user.id).first()
 		product = Product.objects.filter(id=product_id, store=store).first()

@@ -16,6 +16,13 @@ class StoreApi(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	parser_classes = [MultiPartParser, JSONParser, FormParser]
 	def get(self, request):
+		if request.GET.get("my"):
+			store = Store.objects.filter(seller=request.user).first()
+			if not store:
+				return Response({"status": False, "message": "Store not found"})
+			store = StoreSerializer(store).data
+			return Response(store)
+		
 		store = Store.objects.all()
 		store = StoreSerializer(store, many=True).data
 		return Response(store)
