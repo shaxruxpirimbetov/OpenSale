@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-q#83d-*gp1uykuddlo%eyixtu#hch1pbfqwfwqfb)=vtv2@wp!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["opensale.onrender.com"]
 CORS_ALLOW_ALL_ORIGINS=True
 
 # Application definition
