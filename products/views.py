@@ -72,7 +72,10 @@ class ProductApi(APIView):
 		if not all([product_id, title, description, price]):
 			return Response({"status": False, "message": "Invalid datas"})
 		
-		store = Store.objects.filter(id=request.user.id).first()
+		store = Store.objects.filter(seller=request.user.id).first()
+		if not store:
+			return Response({"status": False, "message": "Store not found"})
+		
 		product = Product.objects.filter(id=product_id, store=store).first()
 		if not product:
 			return Response({"status": False, "message": "Product not found"})
