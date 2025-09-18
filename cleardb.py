@@ -15,7 +15,7 @@ for app in apps:
 		files = os.listdir()
 		
 		for file in files:
-			if "initial" in file:
+			if file not in ["__pycache__", "__init__.py"]:
 				os.remove(file)
 		print(os.listdir())
 
