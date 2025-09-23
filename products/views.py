@@ -14,7 +14,16 @@ from .serializers import ProductSerializer
 class ProductApi(APIView):
 	permission_classes = [permissions.IsAuthenticated]
 	parser_classes = [MultiPartParser, FormParser, JSONParser]
+	def get_permissions(self):
+		if self.request.method == "GET":
+			if self.request.GET.get("my"):
+				return [permissions.IsAuthenticated()]
+			return [permissions.AllowAny()]
+		else:
+			return [permissions.IsAuthenticated()]
+	
 	def get(self, request):
+		product_id = request.GET.get("product_id")
 		if request.GET.get("my"):
 			store = Store.objects.filter(seller=request.user).first()
 			if not store:
@@ -22,16 +31,29 @@ class ProductApi(APIView):
 			products = Product.objects.filter(store=store).all()
 			products = ProductSerializer(products, many=True).data
 			return Response(products)
+		
+		elif request.GET.get("saved"):
+			products = Product.objects.all()
+			products = ProductSerializer(products, many=True).data
+			result = []
+			for product in products:
+				saved_product = SavedProduct.objects.filter(user=request.user, product_id=product["id"]).first()
+				product["saved"] = True if saved_product else False
+				result.append(product)
 			
+		elif product_id:
+			product = Product.objects.filter(id=product_id).first()
+			if not product:
+				return Response({"status": False, "message": "Product not found"})
+			product = ProductSerializer(product).data
+			if request.user.id:
+				saved_product = SavedProduct.objects.filter(user=request.user, product_id=product_id).first()
+				product["saved"] = True if saved_product else False
+			return Response(product)
+		
 		products = Product.objects.all()
 		products = ProductSerializer(products, many=True).data
-		result = []
-		for product in products:
-			saved_product = SavedProduct.objects.filter(user=request.user, product_id=product["id"]).first()
-			product["saved"] = True if saved_product else False
-			result.append(product)
-		
-		return Response(result)
+		return Response(products)
 	
 	def post(self, request):
 		data = request.data
