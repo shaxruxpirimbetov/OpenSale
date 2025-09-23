@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-q#83d-*gp1uykuddlo%eyixtu#hch1pbfqwfwqfb)=vtv2@wp!
 DEBUG = True
 
 ALLOWED_HOSTS = ["opensale.onrender.com", "shaxcoder.pythonanywhere.com"]
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 CORS_ALLOW_ALL_ORIGINS=True
 X_FRAME_OPTIONS = 'ALLOWALL'
 
@@ -127,7 +127,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_ROOT = "/data/data/com.termux/files/home/media/"
+#MEDIA_ROOT = "/data/data/com.termux/files/home/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
